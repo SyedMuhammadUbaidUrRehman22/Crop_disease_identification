@@ -1,0 +1,162 @@
+Project Title:
+Improving Crop Disease Detection Using Multi-Dataset Training and Domain Generalization
+
+Project Type:
+Type C AI Project - Research Paper Implementation
+
+Project Overview:
+This project focuses on implementing and extending the ideas presented in the research paper:
+"Plant Leaf Disease Detection Using Deep Learning: A Multi-Dataset Approach"
+
+The main objective is to build a crop disease detection system using deep learning, with particular emphasis on improving model generalization across different image domains. Traditional plant disease classification models often perform well on clean benchmark datasets but fail when deployed on real-world field images due to domain shift. This project addresses that limitation by combining multiple datasets and designing a preprocessing and training pipeline that supports domain generalization.
+
+Motivation:
+Agriculture is a critical sector for food production, economic development, and rural livelihoods. Crop diseases significantly reduce yield, affect food security, and increase economic losses for farmers. Early and accurate disease detection is therefore essential. Manual disease detection by farmers or experts is time-consuming, error-prone, expensive, and difficult to scale. Artificial intelligence, especially deep learning, provides a practical alternative for automated image-based crop disease detection.
+
+Problem Statement:
+Many plant disease detection systems are trained on controlled datasets such as PlantVillage, where images are clean, centered, and captured under uniform conditions. However, real-world images often contain cluttered backgrounds, lighting changes, occlusion, blur, and inconsistent camera angles. This difference between training and deployment environments causes domain shift, which reduces real-world model performance.
+
+This project aims to reduce that domain shift by:
+1. using multiple datasets instead of a single benchmark dataset,
+2. combining clean and real-world plant disease images,
+3. evaluating baseline CNN models,
+4. preparing the system for better cross-domain generalization.
+
+Research Paper Basis:
+The selected paper explores plant leaf disease detection using multiple datasets and deep learning models. It emphasizes the importance of training on diverse image distributions rather than relying only on controlled laboratory-style images. The paper evaluates deep learning architectures and demonstrates that combining multiple datasets can improve robustness.
+
+Project Goals:
+1. Study and analyze the selected research paper.
+2. Reproduce the core idea of multi-dataset plant disease classification.
+3. Use PlantVillage and PlantDoc as the main datasets.
+4. Optionally include additional web-sourced or Kaggle-based images if they match the selected disease classes.
+5. Build preprocessing and cleaning pipelines for image data.
+6. Generate exploratory data analysis, especially class distribution.
+7. Train baseline deep learning models such as MobileNetV2 and ResNet18.
+8. Later compare them with a stronger model such as EfficientNet-B0.
+9. Evaluate how multi-dataset training affects generalization.
+
+Main Datasets:
+1. PlantVillage
+   - Clean, labeled benchmark dataset
+   - Useful for initial training and baseline experiments
+   - Limitation: images are collected in controlled settings
+
+2. PlantDoc
+   - Real-world plant disease dataset
+   - Includes field-like conditions and natural backgrounds
+   - Useful for studying real-world robustness and domain shift
+
+3. Additional scraped or Kaggle data
+   - To be used only if aligned with the paper and class mapping
+   - Intended to increase diversity and support domain generalization
+
+Core Technical Idea:
+The model pipeline will follow this structure:
+
+Input image
+-> data cleaning
+-> preprocessing
+-> dataset integration
+-> CNN-based feature extraction
+-> classification layer
+-> disease class prediction
+
+Planned Workflow:
+Phase 1:
+- Read and analyze the selected paper
+- Identify problem, contributions, novelty, and architecture
+- Define project scope and dataset plan
+
+Phase 2:
+- Download and organize datasets
+- Clean data by removing duplicates, corrupted files, and noisy samples
+- Preprocess images using resizing, normalization, and label encoding
+- Perform exploratory data analysis
+- Create class distribution plots
+- Build combined dataset with overlapping disease classes
+
+Phase 3:
+- Train baseline models
+- Compare MobileNetV2 and ResNet18
+- Add EfficientNet-B0 as a stronger model if time permits
+- Evaluate train, validation, and test performance
+
+Phase 4:
+- Study domain generalization performance
+- Test whether multi-dataset training improves robustness
+- Analyze limitations and future improvements
+
+Baseline Models:
+1. MobileNetV2
+   - Lightweight
+   - Suitable for efficient inference
+   - Good baseline for mobile or edge deployment
+
+2. ResNet18
+   - Standard CNN baseline
+   - Stable and easy to fine-tune
+   - Good balance between simplicity and performance
+
+3. EfficientNet-B0
+   - Optional stronger model
+   - Good parameter efficiency
+   - Appropriate for later extension beyond the baselines
+
+Expected Output:
+The final output of the project is a crop disease classification system that can predict disease categories from plant leaf images while being more robust to differences between clean benchmark data and real-world images.
+
+Repository Structure:
+crop-disease-detection/
+│── README.md
+│── requirements.txt
+│
+├── data_scripts/
+│   ├── cleaning.py
+│   └── preprocessing.py
+│
+├── models/
+│   └── baseline_train.py
+│
+├── notebooks/
+│   └── eda.ipynb
+│
+├── reports/
+│   └── deliverable1.tex
+│
+└── data/
+    ├── plantvillage/
+    ├── plantdoc/
+    ├── scraped/
+    └── combined_dataset/
+
+Important Notes:
+- The project is not only about achieving high accuracy on a single dataset.
+- The main focus is robustness, dataset diversity, and generalization.
+- The final class list should be decided based on overlap between the paper and available datasets.
+- All results, figures, and discussions should be presented in an academic style suitable for university submission.
+
+Deliverable 1 Focus:
+- Background and motivation
+- Paper selection and citation
+- Key contributions of the paper
+- Architecture explanation
+- Baseline model selection
+- Dataset plan
+- Data cleaning and preprocessing scripts
+- EDA plan and class distribution visualization
+- Professional README and LaTeX report
+
+Keywords:
+Crop Disease Detection
+Plant Leaf Classification
+Deep Learning
+Convolutional Neural Networks
+Transfer Learning
+PlantVillage
+PlantDoc
+Domain Shift
+Domain Generalization
+Multi-Dataset Training
+Agricultural AI
+Food Security

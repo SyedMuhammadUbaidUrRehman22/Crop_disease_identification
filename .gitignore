@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.vscode/
+
+data/plantdoc/
+data/web_sourced/
+data/combined_dataset/
+data/train/
+data/val/
+data/test/
+data/*.zip
+
+kaggle.json
+.env

@@ -1,0 +1,22 @@
+                            precision    recall  f1-score   support
+
+        apple_leaf_healthy       0.71      1.00      0.83        20
+           apple_leaf_rust       0.74      0.76      0.75        38
+           apple_leaf_scab       0.71      0.65      0.68        34
+       corn_grey_leaf_spot       0.62      0.82      0.71        22
+          corn_leaf_blight       0.77      0.70      0.73        43
+         corn_leaf_healthy       0.63      1.00      0.77        12
+            corn_leaf_rust       0.89      0.75      0.81        32
+        potato_leaf_blight       0.88      0.71      0.79        42
+     potato_leafroll_virus       1.00      0.62      0.77         8
+tomato_leaf_bacterial_spot       0.48      0.37      0.42        27
+  tomato_leaf_early_blight       0.55      0.57      0.56        28
+       tomato_leaf_healthy       0.52      0.78      0.62        18
+   tomato_leaf_late_blight       0.75      0.72      0.74        29
+         tomato_leaf_mould       0.67      0.77      0.71        26
+tomato_leaf_powdery_mildew       0.73      0.67      0.70        12
+ tomato_septoria_leaf_spot       0.67      0.56      0.61        36
+
+                  accuracy                           0.70       427
+                 macro avg       0.71      0.72      0.70       427
+              weighted avg       0.71      0.70      0.70       427

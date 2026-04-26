@@ -16,3 +16,7 @@ data/*.zip
 kaggle.json
 .env
 data/
+outputs/weights/
+*.pt
+*.pth
+*.ckpt

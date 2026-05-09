@@ -1,0 +1,16 @@
+0,apple_leaf_healthy
+1,apple_leaf_rust
+2,apple_leaf_scab
+3,corn_grey_leaf_spot
+4,corn_leaf_blight
+5,corn_leaf_healthy
+6,corn_leaf_rust
+7,potato_leaf_blight
+8,potato_leafroll_virus
+9,tomato_leaf_bacterial_spot
+10,tomato_leaf_early_blight
+11,tomato_leaf_healthy
+12,tomato_leaf_late_blight
+13,tomato_leaf_mould
+14,tomato_leaf_powdery_mildew
+15,tomato_septoria_leaf_spot

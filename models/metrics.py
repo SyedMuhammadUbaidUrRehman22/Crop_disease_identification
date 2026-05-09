@@ -194,9 +194,10 @@ def plot_confusion_matrix(
 
 
 def plot_training_curves(
-    history: Dict[str, List[float]],
-    output_dir: Optional[Path] = None,
-) -> None:
+    history,
+    output_dir=None,
+    model_name="model",
+):
     """
     Plots training and validation loss/accuracy curves.
 
@@ -207,6 +208,10 @@ def plot_training_curves(
         val_acc
     """
 
+    if output_dir is not None:
+        output_dir = output_dir / model_name
+        output_dir.mkdir(parents=True, exist_ok=True)
+
     epochs = range(1, len(history["train_loss"]) + 1)
 
     plt.figure(figsize=(8, 5))
@@ -214,12 +219,11 @@ def plot_training_curves(
     plt.plot(epochs, history["val_loss"], label="Validation Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.title("Training and Validation Loss")
+    plt.title(f"Training and Validation Loss - {model_name}")
     plt.legend()
     plt.tight_layout()
 
     if output_dir:
-        output_dir.mkdir(parents=True, exist_ok=True)
         loss_path = output_dir / "loss_curve.png"
         plt.savefig(loss_path, dpi=300, bbox_inches="tight")
         print(f"Loss curve saved to: {loss_path}")
@@ -231,7 +235,7 @@ def plot_training_curves(
     plt.plot(epochs, history["val_acc"], label="Validation Accuracy")
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
-    plt.title("Training and Validation Accuracy")
+    plt.title(f"Training and Validation Accuracy - {model_name}")
     plt.legend()
     plt.tight_layout()
 
@@ -241,8 +245,6 @@ def plot_training_curves(
         print(f"Accuracy curve saved to: {acc_path}")
 
     plt.show()
-
-
 def plot_multiclass_roc_curve(
     y_true: np.ndarray,
     y_prob: np.ndarray,

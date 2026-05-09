@@ -22,10 +22,16 @@ from models.metrics import (
 
 
 def get_device() -> torch.device:
+    """
+    Select GPU if available, otherwise CPU.
+    """
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def load_checkpoint(checkpoint_path: Path, device: torch.device):
+    """
+    Loads a saved checkpoint file.
+    """
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
 
@@ -39,6 +45,9 @@ def evaluate_model(
     batch_size: int,
     dropout: float,
 ):
+    """
+    Full evaluation pipeline for a trained model.
+    """
     device = get_device()
     print(f"Using device: {device}")
 

@@ -28,10 +28,7 @@ def get_device() -> torch.device:
 def compute_class_weights(train_dataset) -> torch.Tensor:
     """
     Computes inverse-frequency class weights for imbalanced datasets.
-
-    This gives higher importance to underrepresented classes during training.
     """
-
     class_counts = [0] * len(train_dataset.classes)
 
     for _, label in train_dataset.samples:
@@ -60,7 +57,6 @@ def train_one_epoch(
     """
     Trains the model for one epoch.
     """
-
     model.train()
 
     running_loss = 0.0
@@ -107,7 +103,6 @@ def validate_one_epoch(
     """
     Evaluates the model on validation data.
     """
-
     model.eval()
 
     running_loss = 0.0
@@ -145,7 +140,6 @@ def save_history_csv(history: Dict[str, List[float]], output_path: Path) -> None
     """
     Saves training history to CSV.
     """
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, "w", newline="", encoding="utf-8") as f:
@@ -168,7 +162,6 @@ def save_class_mapping(class_names: List[str], output_path: Path) -> None:
     """
     Saves class index mapping.
     """
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, "w", encoding="utf-8") as f:
@@ -192,7 +185,6 @@ def train_model(
     """
     Full training pipeline.
     """
-
     device = get_device()
     print(f"Using device: {device}")
 
@@ -201,13 +193,21 @@ def train_model(
     test_dir = BASE_DIR / "data" / "test"
 
     output_dir = BASE_DIR / "outputs"
-    weights_dir = output_dir / "weights"
-    figures_dir = output_dir / "figures"
-    logs_dir = output_dir / "logs"
+    weights_root = output_dir / "weights"
+    figures_root = output_dir / "figures"
+    logs_root = output_dir / "logs"
 
-    weights_dir.mkdir(parents=True, exist_ok=True)
-    figures_dir.mkdir(parents=True, exist_ok=True)
-    logs_dir.mkdir(parents=True, exist_ok=True)
+    weights_root.mkdir(parents=True, exist_ok=True)
+    figures_root.mkdir(parents=True, exist_ok=True)
+    logs_root.mkdir(parents=True, exist_ok=True)
+
+    model_weights_dir = weights_root / model_name
+    model_logs_dir = logs_root / model_name
+    model_figures_dir = figures_root / model_name
+
+    model_weights_dir.mkdir(parents=True, exist_ok=True)
+    model_logs_dir.mkdir(parents=True, exist_ok=True)
+    model_figures_dir.mkdir(parents=True, exist_ok=True)
 
     print("Creating datasets...")
     train_dataset, val_dataset, test_dataset = create_datasets(
@@ -234,7 +234,7 @@ def train_model(
 
     save_class_mapping(
         class_names,
-        logs_dir / f"{model_name}_class_mapping.csv",
+        model_logs_dir / "class_mapping.csv",
     )
 
     print(f"Creating model: {model_name}")
@@ -276,7 +276,7 @@ def train_model(
     }
 
     best_val_acc = 0.0
-    best_model_path = weights_dir / f"{model_name}_best.pth"
+    best_model_path = model_weights_dir / "best.pth"
 
     print("\nStarting training...\n")
 
@@ -328,17 +328,20 @@ def train_model(
 
         print()
 
-    history_path = logs_dir / f"{model_name}_training_history.csv"
+    history_path = model_logs_dir / "training_history.csv"
     save_history_csv(history, history_path)
 
     plot_training_curves(
         history,
-        output_dir=figures_dir,
+        output_dir=figures_root,
+        model_name=model_name,
     )
 
     print("\nTraining complete.")
     print(f"Best validation accuracy: {best_val_acc:.4f}")
     print(f"Best model saved at: {best_model_path}")
+    print(f"Logs saved at: {model_logs_dir}")
+    print(f"Figures saved at: {model_figures_dir}")
 
 
 def parse_args():

@@ -1,6 +1,9 @@
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+import matplotlib
+matplotlib.use("Agg")  # safe for Colab / headless environments
+
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -22,15 +25,11 @@ def get_predictions(
     device: torch.device,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Runs inference on a dataloader and returns true labels, predicted labels,
-    and class probabilities.
-
-    Returns:
-        y_true: shape (N,)
-        y_pred: shape (N,)
-        y_prob: shape (N, C)
+    Runs inference on a dataloader and returns:
+        y_true: true labels, shape (N,)
+        y_pred: predicted labels, shape (N,)
+        y_prob: predicted probabilities, shape (N, C)
     """
-
     model.eval()
 
     all_labels = []
@@ -65,10 +64,7 @@ def calculate_metrics(
 ) -> Dict[str, float]:
     """
     Calculates accuracy, precision, recall, F1-score, and optional AUC-ROC.
-
-    Weighted averaging is recommended for imbalanced multi-class datasets.
     """
-
     accuracy = accuracy_score(y_true, y_pred)
 
     precision, recall, f1, _ = precision_recall_fscore_support(
@@ -96,7 +92,6 @@ def calculate_metrics(
                 average=average,
                 multi_class="ovr",
             )
-
             metrics["auc_roc"] = auc_roc
 
         except Exception as e:
@@ -110,10 +105,8 @@ def print_metrics(metrics: Dict[str, float]) -> None:
     """
     Prints metrics in a readable format.
     """
-
     print("\nEvaluation Metrics")
     print("-" * 30)
-
     for key, value in metrics.items():
         if isinstance(value, float):
             print(f"{key}: {value:.4f}")
@@ -129,7 +122,6 @@ def generate_classification_report(
     """
     Generates a detailed class-wise classification report.
     """
-
     return classification_report(
         y_true,
         y_pred,
@@ -145,9 +137,7 @@ def save_classification_report(
     """
     Saves the classification report as a text file.
     """
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(report)
 
@@ -165,7 +155,6 @@ def plot_confusion_matrix(
     """
     Plots and optionally saves a confusion matrix.
     """
-
     cm = confusion_matrix(y_true, y_pred)
 
     if normalize:
@@ -174,7 +163,7 @@ def plot_confusion_matrix(
 
     plt.figure(figsize=figsize)
     plt.imshow(cm, interpolation="nearest")
-    plt.title("Confusion Matrix")
+    plt.title("Confusion Matrix" + (" (Normalized)" if normalize else ""))
     plt.colorbar()
 
     tick_marks = np.arange(len(class_names))
@@ -190,22 +179,24 @@ def plot_confusion_matrix(
         plt.savefig(output_path, dpi=300, bbox_inches="tight")
         print(f"Confusion matrix saved to: {output_path}")
 
-    plt.show()
+    plt.close()
 
 
 def plot_training_curves(
     history: Dict[str, List[float]],
     output_dir: Optional[Path] = None,
+    model_name: str = "model",
 ) -> None:
     """
     Plots training and validation loss/accuracy curves.
 
-    Expected history keys:
-        train_loss
-        val_loss
-        train_acc
-        val_acc
+    Saves to:
+        output_dir/model_name/loss_curve.png
+        output_dir/model_name/accuracy_curve.png
     """
+    if output_dir is not None:
+        output_dir = output_dir / model_name
+        output_dir.mkdir(parents=True, exist_ok=True)
 
     epochs = range(1, len(history["train_loss"]) + 1)
 
@@ -214,24 +205,23 @@ def plot_training_curves(
     plt.plot(epochs, history["val_loss"], label="Validation Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.title("Training and Validation Loss")
+    plt.title(f"Training and Validation Loss - {model_name}")
     plt.legend()
     plt.tight_layout()
 
     if output_dir:
-        output_dir.mkdir(parents=True, exist_ok=True)
         loss_path = output_dir / "loss_curve.png"
         plt.savefig(loss_path, dpi=300, bbox_inches="tight")
         print(f"Loss curve saved to: {loss_path}")
 
-    plt.show()
+    plt.close()
 
     plt.figure(figsize=(8, 5))
     plt.plot(epochs, history["train_acc"], label="Training Accuracy")
     plt.plot(epochs, history["val_acc"], label="Validation Accuracy")
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
-    plt.title("Training and Validation Accuracy")
+    plt.title(f"Training and Validation Accuracy - {model_name}")
     plt.legend()
     plt.tight_layout()
 
@@ -240,7 +230,7 @@ def plot_training_curves(
         plt.savefig(acc_path, dpi=300, bbox_inches="tight")
         print(f"Accuracy curve saved to: {acc_path}")
 
-    plt.show()
+    plt.close()
 
 
 def plot_multiclass_roc_curve(
@@ -253,7 +243,6 @@ def plot_multiclass_roc_curve(
     """
     Plots one-vs-rest ROC curves for multi-class classification.
     """
-
     num_classes = len(class_names)
     y_true_bin = label_binarize(y_true, classes=list(range(num_classes)))
 
@@ -279,7 +268,7 @@ def plot_multiclass_roc_curve(
         plt.savefig(output_path, dpi=300, bbox_inches="tight")
         print(f"ROC curve saved to: {output_path}")
 
-    plt.show()
+    plt.close()
 
 
 def save_metrics_csv(
@@ -289,11 +278,9 @@ def save_metrics_csv(
     """
     Saves metrics dictionary to a CSV file.
     """
-
     import pandas as pd
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
     df = pd.DataFrame([metrics])
     df.to_csv(output_path, index=False)
 

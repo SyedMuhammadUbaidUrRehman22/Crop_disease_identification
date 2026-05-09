@@ -22,10 +22,16 @@ from models.metrics import (
 
 
 def get_device() -> torch.device:
+    """
+    Select GPU if available, otherwise CPU.
+    """
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def load_checkpoint(checkpoint_path: Path, device: torch.device):
+    """
+    Loads a saved checkpoint file.
+    """
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
 
@@ -39,6 +45,9 @@ def evaluate_model(
     batch_size: int,
     dropout: float,
 ):
+    """
+    Full evaluation pipeline for a trained model.
+    """
     device = get_device()
     print(f"Using device: {device}")
 
@@ -47,11 +56,11 @@ def evaluate_model(
     test_dir = BASE_DIR / "data" / "test"
 
     output_dir = BASE_DIR / "outputs"
-    figures_dir = output_dir / "figures"
-    logs_dir = output_dir / "logs"
+    figures_root = output_dir / "figures"
+    logs_root = output_dir / "logs"
 
-    figures_dir.mkdir(parents=True, exist_ok=True)
-    logs_dir.mkdir(parents=True, exist_ok=True)
+    figures_root.mkdir(parents=True, exist_ok=True)
+    logs_root.mkdir(parents=True, exist_ok=True)
 
     print("Creating datasets...")
     train_dataset, val_dataset, test_dataset = create_datasets(
@@ -74,6 +83,11 @@ def evaluate_model(
     num_classes = checkpoint.get("num_classes", len(test_dataset.classes))
     class_names = checkpoint.get("class_names", test_dataset.classes)
     checkpoint_dropout = checkpoint.get("dropout", dropout)
+
+    model_figures_dir = figures_root / checkpoint_model_name
+    model_logs_dir = logs_root / checkpoint_model_name
+    model_figures_dir.mkdir(parents=True, exist_ok=True)
+    model_logs_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Checkpoint model: {checkpoint_model_name}")
     print(f"Number of classes: {num_classes}")
@@ -105,7 +119,7 @@ def evaluate_model(
 
     print_metrics(metrics)
 
-    metrics_path = logs_dir / f"{checkpoint_model_name}_test_metrics.csv"
+    metrics_path = model_logs_dir / "test_metrics.csv"
     save_metrics_csv(metrics, metrics_path)
 
     report = generate_classification_report(
@@ -118,10 +132,10 @@ def evaluate_model(
     print("-" * 50)
     print(report)
 
-    report_path = logs_dir / f"{checkpoint_model_name}_classification_report.txt"
+    report_path = model_logs_dir / "classification_report.txt"
     save_classification_report(report, report_path)
 
-    confusion_matrix_path = figures_dir / f"{checkpoint_model_name}_confusion_matrix.png"
+    confusion_matrix_path = model_figures_dir / "confusion_matrix.png"
     plot_confusion_matrix(
         y_true=y_true,
         y_pred=y_pred,
@@ -130,7 +144,7 @@ def evaluate_model(
         normalize=False,
     )
 
-    normalized_confusion_matrix_path = figures_dir / f"{checkpoint_model_name}_confusion_matrix_normalized.png"
+    normalized_confusion_matrix_path = model_figures_dir / "confusion_matrix_normalized.png"
     plot_confusion_matrix(
         y_true=y_true,
         y_pred=y_pred,
@@ -139,7 +153,7 @@ def evaluate_model(
         normalize=True,
     )
 
-    roc_path = figures_dir / f"{checkpoint_model_name}_roc_curve.png"
+    roc_path = model_figures_dir / "roc_curve.png"
     plot_multiclass_roc_curve(
         y_true=y_true,
         y_prob=y_prob,
@@ -150,7 +164,7 @@ def evaluate_model(
     print("\nEvaluation complete.")
     print(f"Metrics saved to: {metrics_path}")
     print(f"Classification report saved to: {report_path}")
-    print(f"Figures saved to: {figures_dir}")
+    print(f"Figures saved to: {model_figures_dir}")
 
 
 def parse_args():
@@ -176,7 +190,7 @@ def parse_args():
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="outputs/weights/efficientnet_b0_best.pth",
+        default="outputs/weights/efficientnet_b0/best.pth",
         help="Path to saved model checkpoint.",
     )
 

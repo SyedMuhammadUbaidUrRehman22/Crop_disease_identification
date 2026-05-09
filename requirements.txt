@@ -5,4 +5,8 @@ pillow
 matplotlib
 pandas
 scikit-learn
+pandas
+pytorch
+torch
+torchvision
 jupyter
